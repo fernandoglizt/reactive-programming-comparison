@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	defaultPort      = "8080"
-	defaultDelayMs   = 50
-	maxDelayMs       = 10_000 // 10s de proteção
+	defaultPort    = "8080"
+	defaultDelayMs = 50
+	maxDelayMs     = 10_000 // 10s de proteção
 )
 
 type response struct {
@@ -58,6 +58,8 @@ func getenvInt(key string, def int) int {
 }
 
 func main() {
+	log.Println("Starting slow-io service...")
+
 	port := strings.TrimSpace(os.Getenv("PORT"))
 	if port == "" {
 		port = defaultPort
@@ -76,9 +78,12 @@ func main() {
 		instance = fmt.Sprintf("slow-io-%s", uuid.NewString())
 	}
 
+	log.Printf("slow-io configuration: port=%s, baseDelay=%d, instance=%s", port, baseDelay, instance)
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Health check requested from %s", r.RemoteAddr)
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]any{"ok": true, "ts": time.Now().Format(time.RFC3339Nano)})
 	})

@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   slow-io:
     build:
@@ -14,7 +12,7 @@ services:
       - "18080:8080"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
-      interval: 5s
+      interval: 30s
       timeout: 3s
       retries: 5
     deploy:
@@ -22,3 +20,32 @@ services:
         limits:
           cpus: "1.0"
           memory: 512M
+
+  java-reactor:
+    build:
+      context: .
+      dockerfile: java-reactor/Dockerfile
+    image: java-reactor:local
+    container_name: java-reactor
+    environment:
+      - PORT=8081
+      - MAX_COUNT=200000
+      - FLATMAP_CONCURRENCY=64
+      - DOWNSTREAM_TIMEOUT_MS=2000
+      - RETRY_ATTEMPTS=1
+      - LOG_LEVEL=INFO
+    ports:
+      - "18081:8081"
+    depends_on:
+      - slow-io
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
