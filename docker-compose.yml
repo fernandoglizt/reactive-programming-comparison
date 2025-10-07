@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  slow-io:
+    build:
+      context: .
+      dockerfile: slow-io/Dockerfile
+    image: slow-io:local
+    container_name: slow-io
+    environment:
+      - PORT=8080
+      - BASE_DELAY_MS=50
+    ports:
+      - "18080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
