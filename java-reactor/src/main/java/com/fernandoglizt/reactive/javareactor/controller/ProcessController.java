@@ -34,7 +34,6 @@ public class ProcessController {
         logger.info("Processing request: count={}, batch={}, ioDelayMs={}, downstreamUrl={}", 
                 request.getCount(), request.getBatch(), request.getIoDelayMs(), request.getDownstreamUrl());
 
-        // Validações
         if (request.getCount() <= 0) {
             logger.warn("Invalid count: {}", request.getCount());
             return Mono.just(ResponseEntity.badRequest().body(Map.of("error", "count must be > 0")));
@@ -50,7 +49,6 @@ public class ProcessController {
             return Mono.just(ResponseEntity.badRequest().body(Map.of("error", "count exceeds maximum allowed: " + maxCount)));
         }
 
-        // Normalizar ioDelayMs se negativo
         if (request.getIoDelayMs() < 0) {
             request.setIoDelayMs(0);
         }

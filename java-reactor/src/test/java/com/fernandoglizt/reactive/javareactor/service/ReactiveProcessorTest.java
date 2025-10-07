@@ -10,11 +10,9 @@ class ReactiveProcessorTest {
 
     @Test
     void shouldCreateReactiveProcessor() {
-        // Simple test to verify the service can be instantiated
         WebClient webClient = WebClient.builder().build();
         ReactiveProcessor processor = new ReactiveProcessor(webClient, 64, 1);
         
-        // Verify it's not null
         assert processor != null;
     }
 }

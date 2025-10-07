@@ -51,9 +51,9 @@ public class ReactiveProcessor {
         Instant startTime = Instant.now();
 
         return Flux.range(1, request.getCount())
-                .map(i -> i * 2) // Transformação leve: multiplicar por 2
-                .filter(i -> i % 2 == 0) // Manter apenas pares (todos serão pares após *2)
-                .buffer(request.getBatch()) // Agrupar em lotes
+                .map(i -> i * 2)
+                .filter(i -> i % 2 == 0)
+                .buffer(request.getBatch())
                 .flatMap(lote -> processBatch(lote, request), batchConcurrency)
                 .reduce(new Acc(0, 0, 0), (acc, ok) -> ok ? acc.incOk() : acc.incFail())
                 .map(acc -> {
