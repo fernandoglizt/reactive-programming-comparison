@@ -18,8 +18,6 @@ class FlowProcessorTest {
 
     @Test
     fun `should create FlowProcessor`() {
-        // This test verifies that FlowProcessor can be instantiated
-        // and the Spring context loads correctly
         assert(flowProcessor != null)
     }
 }
