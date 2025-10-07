@@ -62,3 +62,27 @@ temp/
 # Build artifacts
 build/
 dist/
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Java/Kotlin specific
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# JVM crash logs
+hs_err_pid*
+replay_pid*
+
+# Go specific binaries
+go-rxgo/go-rxgo
+slow-io/slow-io
