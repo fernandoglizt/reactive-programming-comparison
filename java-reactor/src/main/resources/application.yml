@@ -10,7 +10,8 @@ spring:
 app:
   max-count: ${MAX_COUNT:200000}
   flatmap:
-    concurrency: ${FLATMAP_CONCURRENCY:64}
+    batch-concurrency: ${BATCH_CONCURRENCY:4}
+    item-concurrency: ${ITEM_CONCURRENCY:64}
   downstream:
     timeout-ms: ${DOWNSTREAM_TIMEOUT_MS:2000}
     retry-attempts: ${RETRY_ATTEMPTS:1}
