@@ -49,3 +49,33 @@ services:
         limits:
           cpus: "2.0"
           memory: 1G
+
+  kotlin-flow:
+    build:
+      context: .
+      dockerfile: kotlin-flow/Dockerfile
+    image: kotlin-flow:local
+    container_name: kotlin-flow
+    environment:
+      - PORT=8082
+      - MAX_COUNT=200000
+      - BATCH_CONCURRENCY=4
+      - ITEM_CONCURRENCY=128
+      - DOWNSTREAM_TIMEOUT_MS=2000
+      - RETRY_ATTEMPTS=1
+      - LOG_LEVEL=INFO
+    ports:
+      - "18082:8082"
+    depends_on:
+      - slow-io
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
