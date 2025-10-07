@@ -30,24 +30,24 @@ public class ProcessController {
     }
 
     @PostMapping("/process")
-    public Mono<ResponseEntity<ProcessResponse>> process(@RequestBody ProcessRequest request) {
+    public Mono<ResponseEntity<?>> process(@RequestBody ProcessRequest request) {
         logger.info("Processing request: count={}, batch={}, ioDelayMs={}, downstreamUrl={}", 
                 request.getCount(), request.getBatch(), request.getIoDelayMs(), request.getDownstreamUrl());
 
         // Validações
         if (request.getCount() <= 0) {
             logger.warn("Invalid count: {}", request.getCount());
-            return Mono.just(ResponseEntity.badRequest().build());
+            return Mono.just(ResponseEntity.badRequest().body(Map.of("error", "count must be > 0")));
         }
         
         if (request.getBatch() <= 0) {
             logger.warn("Invalid batch: {}", request.getBatch());
-            return Mono.just(ResponseEntity.badRequest().build());
+            return Mono.just(ResponseEntity.badRequest().body(Map.of("error", "batch must be > 0")));
         }
         
         if (request.getCount() > maxCount) {
             logger.warn("Count exceeds maximum: {} > {}", request.getCount(), maxCount);
-            return Mono.just(ResponseEntity.badRequest().build());
+            return Mono.just(ResponseEntity.badRequest().body(Map.of("error", "count exceeds maximum allowed: " + maxCount)));
         }
 
         // Normalizar ioDelayMs se negativo
@@ -56,11 +56,7 @@ public class ProcessController {
         }
 
         return reactiveProcessor.processEvents(request)
-                .map(ResponseEntity::ok)
-                .onErrorResume(error -> {
-                    logger.error("Error processing events: {}", error.getMessage(), error);
-                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-                });
+                .map(ResponseEntity::ok);
     }
 
     @GetMapping("/healthz")
