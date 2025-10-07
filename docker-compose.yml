@@ -79,3 +79,33 @@ services:
         limits:
           cpus: "2.0"
           memory: 1G
+
+  go-rxgo:
+    build:
+      context: .
+      dockerfile: go-rxgo/Dockerfile
+    image: go-rxgo:local
+    container_name: go-rxgo
+    environment:
+      - PORT=8083
+      - MAX_COUNT=200000
+      - BATCH_CONCURRENCY=4
+      - ITEM_CONCURRENCY=64
+      - DOWNSTREAM_TIMEOUT_MS=2000
+      - RETRY_ATTEMPTS=1
+      - LOG_LEVEL=INFO
+    depends_on:
+      - slow-io
+    ports:
+      - "18083:8083"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8083/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
