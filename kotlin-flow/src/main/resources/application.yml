@@ -1,0 +1,24 @@
+server:
+  port: ${PORT:8082}
+
+app:
+  max-count: ${MAX_COUNT:200000}
+  flow:
+    batch-concurrency: ${BATCH_CONCURRENCY:4}
+    item-concurrency: ${ITEM_CONCURRENCY:128}
+  downstream:
+    timeout-ms: ${DOWNSTREAM_TIMEOUT_MS:2000}
+    retry-attempts: ${RETRY_ATTEMPTS:1}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    com.fernandoglizt.reactive.kotlinflow: ${LOG_LEVEL:INFO}
+    root: INFO
+  file:
+    name: /dev/stdout
