@@ -196,3 +196,32 @@ services:
         limits:
           cpus: "2.0"
           memory: 1G
+
+  go-imperative:
+    build:
+      context: .
+      dockerfile: imperative/go-imperative/Dockerfile
+    image: go-imperative:local
+    container_name: go-imperative
+    environment:
+      - PORT=8093
+      - MAX_COUNT=200000
+      - CONCURRENCY=128
+      - DOWNSTREAM_TIMEOUT_MS=2000
+      - RETRY_ATTEMPTS=1
+      - LOG_LEVEL=INFO
+    depends_on:
+      - slow-io
+    ports:
+      - "18093:8093"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8093/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
