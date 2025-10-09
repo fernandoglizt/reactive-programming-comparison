@@ -167,3 +167,32 @@ services:
         limits:
           cpus: "2.0"
           memory: 1G
+
+  kotlin-imperative:
+    build:
+      context: .
+      dockerfile: imperative/kotlin-imperative/Dockerfile
+    image: kotlin-imperative:local
+    container_name: kotlin-imperative
+    environment:
+      - PORT=8092
+      - MAX_COUNT=200000
+      - CONCURRENCY=128
+      - DOWNSTREAM_TIMEOUT_MS=2000
+      - RETRY_ATTEMPTS=1
+      - LOG_LEVEL=INFO
+    ports:
+      - "18092:8092"
+    depends_on:
+      - slow-io
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8092/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
