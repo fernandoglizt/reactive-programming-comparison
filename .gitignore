@@ -84,5 +84,5 @@ hs_err_pid*
 replay_pid*
 
 # Go specific binaries
-go-rxgo/go-rxgo
+reactive/go-rxgo/go-rxgo
 slow-io/slow-io

@@ -1,18 +1,18 @@
-# Multi-stage build for Java Reactor application
+# Multi-stage build for Kotlin Flow application
 FROM gradle:8.10.2-jdk21-alpine AS builder
 
 WORKDIR /app
 
 # Copy gradle wrapper files first
-COPY java-reactor/gradlew java-reactor/gradlew.bat ./
-COPY java-reactor/gradle/ gradle/
-COPY java-reactor/build.gradle java-reactor/settings.gradle ./
+COPY reactive/kotlin-flow/gradlew reactive/kotlin-flow/gradlew.bat ./
+COPY reactive/kotlin-flow/gradle/ gradle/
+COPY reactive/kotlin-flow/build.gradle.kts reactive/kotlin-flow/settings.gradle.kts ./
 
 # Make gradlew executable
 RUN chmod +x gradlew
 
 # Copy source code
-COPY java-reactor/src/ src/
+COPY reactive/kotlin-flow/src/ src/
 
 # Build the application using gradlew wrapper
 RUN ./gradlew clean build -x test --no-daemon
@@ -29,19 +29,20 @@ WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar app.jar
 
 # Expose port
-EXPOSE 8081
+EXPOSE 8082
 
 # Environment variables
-ENV PORT=8081
+ENV PORT=8082
 ENV MAX_COUNT=200000
-ENV FLATMAP_CONCURRENCY=64
+ENV BATCH_CONCURRENCY=4
+ENV ITEM_CONCURRENCY=128
 ENV DOWNSTREAM_TIMEOUT_MS=2000
 ENV RETRY_ATTEMPTS=1
 ENV LOG_LEVEL=INFO
 
 # Health check
-HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:8081/healthz || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8082/healthz || exit 1
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]

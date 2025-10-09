@@ -24,7 +24,7 @@ services:
   java-reactor:
     build:
       context: .
-      dockerfile: java-reactor/Dockerfile
+      dockerfile: reactive/java-reactor/Dockerfile
     image: java-reactor:local
     container_name: java-reactor
     environment:
@@ -53,7 +53,7 @@ services:
   kotlin-flow:
     build:
       context: .
-      dockerfile: kotlin-flow/Dockerfile
+      dockerfile: reactive/kotlin-flow/Dockerfile
     image: kotlin-flow:local
     container_name: kotlin-flow
     environment:
@@ -83,7 +83,7 @@ services:
   go-rxgo:
     build:
       context: .
-      dockerfile: go-rxgo/Dockerfile
+      dockerfile: reactive/go-rxgo/Dockerfile
     image: go-rxgo:local
     container_name: go-rxgo
     environment:
@@ -112,7 +112,7 @@ services:
 
   python-rxpy:
     build:
-      context: ./python-rxpy
+      context: ./reactive/python-rxpy
     image: python-rxpy:local
     container_name: python-rxpy
     environment:
