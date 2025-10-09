@@ -1,0 +1,23 @@
+server:
+  port: ${PORT:8081}
+
+spring:
+  application:
+    name: java-imperative
+
+app:
+  version: 1.0.0
+  max-count: ${MAX_COUNT:200000}
+  executor:
+    pool-size: ${POOL_SIZE:128}
+  downstream:
+    timeout-ms: ${DOWNSTREAM_TIMEOUT_MS:2000}
+    retry-attempts: ${RETRY_ATTEMPTS:1}
+
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+    com.fernandoglizt: ${LOG_LEVEL:INFO}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+
